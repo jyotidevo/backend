@@ -61,6 +61,24 @@ const delectproduct = async (req, res) => {
     catch (error) {
         res.status(500).json({ error: 'internal server error' });
     }
-};
-
-module.exports = { createProduct, getallproduct, getproductbyid, updateproduct, delectproduct };
+}
+const loginProduct = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const product = await Product.findOne({ where: { email } });
+        if (!product) {
+            res.status(404).json({ error: 'product not found' });
+        }
+        else {
+            if (product.password !== password) {
+                return res.status(401).json({ error: 'invalid password' });
+            }
+            else {
+                res.status(200).json({ message: 'product logged in successfully' });
+            }
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'internal server error' });
+    }
+}
+module.exports = { createProduct, getallproduct, getproductbyid, updateproduct, delectproduct, loginProduct };
